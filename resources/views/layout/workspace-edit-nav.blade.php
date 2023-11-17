@@ -9,21 +9,26 @@
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.2-dist/css/bootstrap.css') }}">
 </head>
 <body>
-<header class="shadow mb-4">
+<header class="shadow mb-4 d-flex px-5 gap-5">
+    <h2 class="">
+        <a href="{{ route('workspace.index') }}" class="text-decoration-none">
+            Workspaces
+        </a>
+    </h2>
     <nav class="nav justify-content-center">
         <ul class="nav-menu d-flex align-items-end gap-5 list-unstyled">
             <li class="nav-menu__list">
-                <a href="{{ route('workspace.edit') }}" class="text-decoration-none fs-4 fw-bold">
+                <a href="{{ route('workspace.edit', $workspaceId) }}" class="text-decoration-none fs-4 fw-bold">
                     @yield('workspace-title')
                 </a>
             </li>
             <li class="nav-menu__list">
-                <a href="{{ route('token.index') }}" class="text-decoration-none text-black fs-5">
+                <a href="{{ route('workspace.token.index', $workspaceId) }}" class="text-decoration-none text-black fs-5">
                     Tokens
                 </a>
             </li>
             <li class="nav-menu__list">
-                <a href="#" class="text-decoration-none text-black fs-5">
+                <a href="{{ route('workspace.quota.index', $workspaceId) }}" class="text-decoration-none text-black fs-5">
                     Quotas
                 </a>
             </li>

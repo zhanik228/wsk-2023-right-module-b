@@ -3,16 +3,22 @@
 namespace App\Http\Controllers\token;
 
 use App\Http\Controllers\Controller;
+use App\Models\ApiToken;
+use App\Models\Workspace;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use TheSeer\Tokenizer\Token;
 
 class TokenController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(string $workspaceId)
     {
-        return view('token.token-list');
+        $workspace = Workspace::find($workspaceId);
+        $tokens = ApiToken::where('workspace_id', $workspaceId)->get();
+        return view('token.token-list', compact(['workspaceId', 'workspace', 'tokens']));
     }
 
     /**
@@ -26,9 +32,26 @@ class TokenController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $workspaceId)
     {
-        //
+        $request->validate([
+            'name' => 'max:100'
+        ]);
+
+        $generatedToken = Str::random(40);
+
+        ApiToken::create([
+            'workspace_id' => $workspaceId,
+            'name' => $request->name,
+            'token' => $generatedToken,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'revoked_at' => null
+        ]);
+
+        return redirect()->route('workspace.token.index', $workspaceId)->with([
+            'message' => "Token successfully created, Your token: $generatedToken"
+        ]);
     }
 
     /**
@@ -58,8 +81,14 @@ class TokenController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($workspaceId, string $id)
     {
-        //
+        ApiToken::where('id', $id)
+        ->update([
+            'revoked_at' => now()
+        ]);
+
+        return redirect()->route('workspace.token.index', $workspaceId)
+            ->with(['message' => 'Successfully revoked']);
     }
 }
