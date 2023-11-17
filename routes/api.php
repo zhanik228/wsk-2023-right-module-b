@@ -14,4 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('login', \App\Http\Controllers\auth\AuthController::class);
+Route::prefix('v1')->group(function() {
+    Route::middleware(['auth', 'web'])->group(function() {
+        Route::resource('workspace', \App\Http\Controllers\workspace\WorkspaceController::class);
+        Route::resource('token', \App\Http\Controllers\token\TokenController::class);
+    });
+
+    Route::middleware(['guest'])->group(function() {
+       Route::resource('login', \App\Http\Controllers\auth\AuthController::class)
+           ->only(['index', 'store']);
+    });
+});

@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\token;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class TokenController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        return view('authorization.auth');
+        return view('token.token-list');
     }
 
     /**
@@ -29,21 +28,7 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required'
-        ]);
-        $username = $request->username;
-        $password = $request->password;
-        $credentials = ['username' => $username, 'password' => $password ];
-
-        if (Auth::attempt($credentials)) {
-            return redirect()->route('workspace.index');
-        }
-
-        return redirect()->route('login.index')->withErrors(
-            array('Failed' => 'Incorrect username or password')
-        );
+        //
     }
 
     /**
